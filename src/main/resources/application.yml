@@ -1,0 +1,63 @@
+spring:
+  application:
+    name: job.search
+server:
+  port: 8080
+  servlet:
+      context-path: /
+
+
+headers:
+  authority: "authority"
+  authorityValue: "www.linkedin.com"
+  method: "method"
+  methodValue: "GET"
+  path: "path"
+  pathValue: "/voyager/api/graphql?variables=(start:0,query:(flagshipSearchIntent:SEARCH_MY_ITEMS_JOB_SEEKER,queryParameters:List((key:cardType,value:List(IN_PROGRESS)))))&queryId=voyagerSearchDashClusters.8832876bc08b96972d2c68331a27ba76"
+  scheme: "scheme"
+  schemeValue: "https"
+  accept: "Accept"
+  acceptValue: "application/vnd.linkedin.normalized+json+2.1"
+  acceptEncoding: "Accept-Encoding"
+  acceptEncodingValue: "gzip, deflate, br, zstd"
+  acceptLanguage: "Accept-Language"
+  acceptLanguageValue: "en-US,en;q=0.9"
+  csrfToken: "Csrf-token"
+  csrfTokenValue: "ajax:6168836619986524880"
+  priority : "Priority"
+  priorityValue: "ajax:6168836619986524880"
+  referer: "Referer"
+  refererValue: "https://www.linkedin.com/my-items/saved-jobs/?cardType=IN_PROGRESS"
+  xlipemMetadata: "X-li-pem-metadata"
+  xlipemMetadataValue: "Voyager - My Items=myitems-saved-jobs"
+  xlitrack: "X-li-track"
+  #xlitrackValue: {clientVersion":"1.13.27083","mpVersion":"1.13.27083","osName":"web","timezoneOffset":0,"timezone":"Europe/London","deviceFormFactor":"DESKTOP","mpName":"voyager-web","displayDensity":2.5,"displayWidth":3840,"displayHeight":2160}
+  userAgent: "User-agent"
+  userAgentValue: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+
+request:
+  urls:
+    savedJobsUrl: "https://www.linkedin.com/voyager/api/graphql?variables=(start:0,query:(flagshipSearchIntent:SEARCH_MY_ITEMS_JOB_SEEKER,queryParameters:List((key:cardType,value:List(SAVED)))))&queryId=voyagerSearchDashClusters.8832876bc08b96972d2c68331a27ba76"
+    inProgressJobsUrl: "https://www.linkedin.com/voyager/api/graphql?variables=(start:0,query:(flagshipSearchIntent:SEARCH_MY_ITEMS_JOB_SEEKER,queryParameters:List((key:cardType,value:List(IN_PROGRESS)))))&queryId=voyagerSearchDashClusters.8832876bc08b96972d2c68331a27ba76"
+    appliedJobsUrl: "https://www.linkedin.com/voyager/api/graphql?variables=(start:0,query:(flagshipSearchIntent:SEARCH_MY_ITEMS_JOB_SEEKER,queryParameters:List((key:cardType,value:List(APPLIED)))))&queryId=voyagerSearchDashClusters.8832876bc08b96972d2c68331a27ba76"
+    archivedJobsUrl: "https://www.linkedin.com/voyager/api/graphql?variables=(start:0,query:(flagshipSearchIntent:SEARCH_MY_ITEMS_JOB_SEEKER,queryParameters:List((key:cardType,value:List(ARCHIVED)))))&queryId=voyagerSearchDashClusters.8832876bc08b96972d2c68331a27ba76"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: circuitbreakers
+
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      linkedInCircuitBreaker:
+        registerHealthIndicator: true
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10000
+        permittedNumberOfCallsInHalfOpenState: 2
+        minimumNumberOfCalls: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
